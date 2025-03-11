@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="/static/script.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <nav>
+        <h1>ShowLog</h1>
+        <div class="center">
+            <a href="/login" class="button-link">Login</a>
+            <a id = "showlistlink" class="button-link">Show List</a>
+        </div>
+    </nav>
+
+    <!-- To Do: Add in button to jump to various sections -->
+
+    <div class="welcome">
+        <h1>Welcome To ShowLog!</h1>
+        <p>Our website helps keep track of all the various tv shows you are watching!</p>
+    </div>
+
+    <div class="HowTo">
+        
+        <h1>How To Guide</h1>
+        <!-- To Do: add pictures if time -->
+        
+        <h2>Getting Started</h2>
+        <p>Users must create or login into their account before accessing their show list. <br><br>
+            Click the white "Login" button at the top of the homepage. <br><br> 
+            
+            If you don't have an account, locate the grey box on the right labelled "Create Account". 
+            Choose your username and password, then click the green button labelled "Create Account".
+            If account created successfully, a light green box will appear to inform you.<br><br>
+
+            Once you have an account, locate the grey box on the left labelled "Login". 
+            Fill in your credentials and click the green "login" button. <br><br> 
+
+            After you have signed into your account, you will be automatically directed to the page containing your show list.
+        </p>
+
+        <h2>Adding a Show to Your List</h2>
+        <p>Locate the white input bar on the top wirght of the page that says "Enter show name..." and click on it. <br><br>
+            Use your keyboard to type in the title of your show. <br><br>
+            Click the green button to the right of the bar labelled "Add New Show". <br><br>
+            Your show will appear at the top of your list with the total episode count, image, and decreiption automatically filled. <br><br>
+        </p>
+
+        <h2>Searching for a Show in Your List</h2>
+        <p>Locate search bar at top left of page. <br><br>
+            Click on the white box. <br><br>
+            Type in the title of the show. <br><br>
+            Click the white "search" button to the right of the box. <br><br>
+            The show will appear at the top of your list. <br><br>
+            To get rid of your results click the clear button<br><br>
+        </p>
+        
+        <h2>Removing a Show from Your List</h2>
+        <p>Locate the show you would like to remove (See: Searching for a Show in Your List). <br><br>
+            On the top right corner of the show card is a green button labelled "Remove Show". <br><br>
+            Click the button. The show is now removed from your list. <br><br>
+        </p>
+    
+        <h2>Altering Show Description</h2>
+        <p> Locate the show you would like to remove (See: Searching for a Show in Your List).<br><br>
+            Click on the desciption text. <br><br>
+            Use your keyboard to enter your own description or thoughts. <br><br>
+            Click out of the textbox to save your input. <br><br>
+        </p>
+
+
+        <h2>Changing Current Episode</h2>
+        <p>Click on the # to the left of the '/'. <br><br>
+            Either enter your episode count through your keyboard or uses the arrows the left to increase or descrease the episode count <br><br>
+        </p>
+
+        <h2>Rating a Show</h2>
+        <p>There are two methods to rate a show. <br><br>
+            Method 1: <br> 
+            Find the star outlines. Click within the grey star. The stars will fill up to the star you have clicked and the yellow number to the right will automatically update with its rating. <br><br>
+            Method 2: <br>
+            To the right of the star outlines is a dark grey oval. Click the oval. You can now enter a number from your keyboard or click the arrows to increase or decrease the rating by 0.5 between 1-5.
+        </p>
+
+        
+    </div>
+
+    <div class="Privacy-Policy">
+        <h1>Privacy Policy</h1>
+
+        <h2>Data Collected</h2>
+        <p>Username and Password are collected to allow users to sign into their individual accounts and access their show list.</p>
+
+        <h2>How We Protect Your Data</h2>
+        <p>Passwords are encypted and stored within our database that is only accessible by administrators.</p>
+    
+    </div>
+
+    <script type="text/javascript">
+        var SCRIPT_ROOT = {{ request.script_root|tojson|safe }} ;
+
+        $("#showlistlink").on("click", function(){
+            $.get(SCRIPT_ROOT + "/anonymous").done(function(response){
+                window.location.replace(`http://${location.hostname}:5000/shows-${response}`)
+            })
+        })
+    </script>
+</body>

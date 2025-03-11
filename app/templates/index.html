@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="/static/script.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <nav>
+        <h1>ShowLog</h1>
+        <div class="center">
+            <a href="/login" class="button-link">Login</a>
+            <a href="/home/" class="button-link">Home Page</a>
+            <button class="signout-button">Sign Out</button>
+        </div>
+    </nav>
+
+    <div class="center">
+        <div class="search-container">
+            <input type="text" id="searchBar" placeholder="Search for shows...">
+            <button class="add-show" onclick="searchShows()">Search</button>
+            <button class="add-show" onclick="clearSearch()">Clear</button>
+        </div>
+
+        <div class="add-show-container">
+            <input type="text" id="newShowInput" placeholder="Enter show name...">
+            <button class="add-show" onclick="add_show()">Add New Show</button>
+        </div>
+    </div>
+
+    <div class="sort-container">
+        <select id="sortDropdown" onchange="sortShows()">
+            <option value="default" selected>Sort Shows</option>
+            <option value="az">A-Z</option>
+            <option value="za">Z-A</option>
+            <option value="airdate">First Air Date</option>
+            <option value="latest-episode">Latest Episode</option>
+        </select>
+    </div>
+
+
+    <ul id="show_list">
+        <!--
+        <li class="show" id="sample">
+            <h2 contenteditable="true" spellcheck="false" class="showname">Show Name</h2>
+            <div class="showbox">
+                <div class="img-frame">
+                    <img src="static/img/sample.png" class = "show-img">
+                </div>
+                <div class="show-description">
+                    <p spellcheck="false" class = "desc-p" contenteditable="true">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt ab hic, sunt non quaerat eveniet voluptate asperiores doloribus modi veritatis temporibus inventore officiis facere sed aut facilis aspernatur. Est, at. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Pariatur at est, architecto repellendus repellat maiores odit. Harum necessitatibus quia sunt ex esse laboriosam, veniam deserunt. Adipisci perspiciatis suscipit qui vitae? Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam minima ea numquam placeat. Necessitatibus, eos pariatur beatae explicabo suscipit architecto commodi dolorem odit, error temporibus, quidem ab corrupti consequuntur repellat? Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores facere mollitia fuga illo repellendus voluptate ratione alias cum aliquid quo reiciendis, consequatur debitis odio excepturi, est asperiores laborum non architecto?</p>
+                </div>
+                <div class="remove-show-container">
+                    <button class="remove-show" onclick="remove_show(this)">Remove Show</button>
+                </div>
+                <div class="progbar">
+                    <input class="current-ep" type="number" dir="rtl" min="0" maxlength="4" placeholder="####">
+                    <p id="divider">/</p>
+                    <div class="total-ep">22</div>
+                    <div class="meter-bg"></div>
+                    <div class="meter"></div>
+                </div>
+                <div class="ratings">
+                    <div class="star-bg">
+                        <div class="star-darkgray"></div>
+                        <div class="star-yellow"></div>
+                        <img src="static/img/starframe.png">
+                        <div class = "star-buttons">
+                            <button id = "b1star"></button>
+                            <button id = "b2star"></button>
+                            <button id = "b3star"></button>
+                            <button id = "b4star"></button>
+                            <button id = "b5star"></button>
+                        </div>
+                    </div>
+                    <div class="number-bg">
+                        <input class="rating" type="number" placeholder="--" min="0.0" max="5.0" step="0.5">
+                    </div>
+                </div>
+                
+            </div>
+        </li>
+        -->
+        <!-- Repeat for other shows -->
+        <!-- Show list items will be appended here -->
+    </ul>
+
+    <script type="text/javascript">
+        var SCRIPT_ROOT = {{ request.script_root|tojson|safe }} ;
+
+        function db_push(){
+            var names =     document.getElementsByClassName("showname");
+            var desc =      document.getElementsByClassName("desc-p");
+            var current =   document.getElementsByClassName("current-ep");
+            var rating =    document.getElementsByClassName("rating");
+            var img_srcs =  document.getElementsByClassName("show-img")
+
+            console.log(names);
+            var payload = {};
+
+            for(let i = 0; i < names.length; i++){
+                var is = i.toString();
+                payload["name" + is] =      $(names[i]).text();
+                payload["desc" + is] =      $(desc[i]).text();
+                payload["current" + is] =   $(current[i]).val();
+                payload["rating" + is] =    $(rating[i]).val();
+                payload["img_src" + is] =   $(img_srcs[i]).attr("src");
+            }
+
+            //document.getElementsByTagName("h1")[0].innerText = JSON.stringify(payload);
+
+            $.post(SCRIPT_ROOT + "/db_push", payload);
+        }
+
+        function star_adjust(elem){
+            let raw_len = Number($(elem).val())
+            let width = 17.5 * raw_len + 3.4 * (Math.floor(raw_len) % 6);
+            if(width > 102){
+                width = 102;
+            }else if(width == 20.9){
+                width = 20;
+            }else if(width == 41.8){
+                width = 41;
+            }
+            $(elem).parent().parent().find(".star-yellow").width(width);
+        }
+
+        function meter_adjust(elem){
+            let cur_ep = Number($(elem).val());
+            let max_ep = Number($(elem).parent().find(".total-ep")[0].textContent);
+            if (cur_ep > max_ep) {
+                $(elem).val(max_ep);
+                cur_ep = max_ep;
+            }
+            let width = Math.floor((cur_ep * $(elem).parent().width() * 0.7 / max_ep));
+            $(elem).parent().find(".meter").width(width);
+        }
+
+        async function get_episode_count(showname) {
+                const API_KEY = 'fefac935-f11a-4342-87fc-59e8ee37995e';
+                let token;
+
+                try {
+                token = await getAuthToken(API_KEY);
+                } catch (error) {
+                    console.error('Failed to get auth token:', error);
+                    return;
+                }
+
+                let searchResults;
+                try {
+                    searchResults = await searchSeries(token, showname);
+                } catch (error) {
+                    console.error('Failed to search for series:', error);
+                    return;
+                }
+
+                let firstResult;
+                let seriesEpisodes;
+                if (searchResults.data && searchResults.data.length > 0) {
+                    firstResult = searchResults.data[0];
+                    seriesEpisodes = await getEpisodes(token, firstResult.tvdb_id);
+                } else {
+                    firstResult = { name: seriesName };
+                    seriesEpisodes = "1";
+                }
+
+                return seriesEpisodes;
+        }
+
+        $("#show_list").on("change", ".rating", function(){
+            //console.log("CHANGED");
+            //console.log($(this).parent().parent().find(".star-yellow"));
+            // This is horribly complicated for what it does, but it works.
+            star_adjust($(this));
+            db_push();
+        })
+        $("#show_list").on("click", ".star-buttons button", function(){
+            //console.log($(this).attr("id")[1])
+            $(this).parent().parent().parent().find(".rating").val($(this).attr("id")[1])
+            $(".rating").trigger("change");
+        })
+        $("#show_list").on("change", ".current-ep", function(){
+            meter_adjust($(this));
+            db_push();
+        });
+        $("#show_list").on("focusout", ".desc-p", function(){
+            db_push();
+        });
+        $("#show_list").on("focusout", ".showname", function(){
+            db_push();
+        });
+        // From MDN docs on MutationObserver
+        const callback = (mutationList, observer) => {
+            db_push();
+        }
+        $(".signout-button").on("click", function(){
+            $.post(SCRIPT_ROOT + "/signout");
+            window.location.replace(`http://${location.hostname}:5000/login`)
+        })
+        const observer = new MutationObserver(callback)
+        observer.observe(document.getElementById("show_list"), {childList: true})
+        $(document).ready(async function(){
+            $.getJSON(SCRIPT_ROOT + "/retrieve").done(
+                async function(data){
+                    for(let i = 0; i < data.length; i++){
+                        console.log(data[i])
+                        let show_card = document.createElement("li");
+                        let episode_count = await get_episode_count(data[i].name);
+                        show_card.className = "show";
+                        show_card.id = "show card";
+                        show_card.innerHTML = `
+                        <h2 contenteditable="true" spellcheck="false" class = "showname">${data[i].name}</h2>
+                        <div class="showbox">
+                            <div class="img-frame">
+                                <img src="${data[i].img}" class = "show-img">
+                            </div>
+                            <div class="show-description">
+                                <p spellcheck="false" contenteditable="true" class = "desc-p">${data[i].desc}</p>
+                            </div>
+                            <div class="remove-show-container">
+                                <button class="remove-show" onclick="remove_show(this)">Remove Show</button>
+                            </div>
+                            <div class="progbar">
+                                <input class="current-ep" type="number" dir="rtl" min="0" maxlength="4" placeholder="####" value = "${data[i].prog}">
+                                <p id="divider">/</p>
+                                <div class="total-ep">${episode_count}</div>
+                                <div class="meter-bg"></div>
+                                <div class="meter"></div>
+                            </div>
+                            <div class="ratings">
+                                <div class="star-bg">
+                                    <div class="star-darkgray"></div>
+                                    <div class="star-yellow"></div>
+                                    <img src="static/img/starframe.png">
+                                    <div class="star-buttons">
+                                        <button id="b1star"></button>
+                                        <button id="b2star"></button>
+                                        <button id="b3star"></button>
+                                        <button id="b4star"></button>
+                                        <button id="b5star"></button>
+                                    </div>
+                                </div>
+                                <div class="number-bg">
+                                    <input class="rating" type="number" placeholder="--" min="0.0" max="5.0" step="0.5" value = "${data[i].rate}">
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    const list = document.getElementById("show_list");
+                    list.insertBefore(show_card, list.children[0]);
+                    star_adjust(show_card.getElementsByClassName("rating")[0]);
+                    meter_adjust(show_card.getElementsByClassName("current-ep")[0])
+                    }
+                }
+            )
+        })
+    </script>
+</body>
+</html>

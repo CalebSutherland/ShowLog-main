@@ -1,0 +1,496 @@
+html {
+    background-color: #444;
+    font-family: Arial, Helvetica, sans-serif;
+    caret-color: transparent;
+}
+
+body {
+    margin: 0;
+}
+
+nav {
+    background: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center the content horizontally */
+}
+
+nav h1 {
+    margin: 0;
+    color: #fff;
+    padding: 10px 0 10px;
+    margin-top: -1px;
+}
+
+nav a{
+    color: #fff;
+    margin: 5%;
+    min-width: fit-content;
+}
+
+.button-link, .signout-button {
+    background-color: rgb(14, 145, 53);
+    border: none;
+    color: #fff;
+    text-align: center; 
+    font-size: 14px; 
+    padding: 5px; 
+    border-radius: 5%;
+    cursor: pointer;
+
+    min-width: fit-content;    
+    margin-left: 5%; 
+    margin-bottom: 2%; 
+    text-decoration: none; 
+    display: inline-block; 
+    vertical-align: middle; 
+}
+
+.button-link {
+    margin-top: 0; 
+    margin-bottom: 2%; 
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center the items horizontally */
+    margin: 10px 0;
+    margin-right: 25%;
+}
+
+.add-show-container {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center the items horizontally */
+    margin: 10px 0;
+}
+
+.search-container input[type="text"], .add-show-container input[type="text"] {
+    padding: 10px;
+    margin-right: 5px;
+    width: 300px; /* Adjust width as needed */
+    caret-color: #000;
+}
+
+.search-container button, .add-show-container button {
+    padding: 10px;
+    margin-right: 5px;
+    font-size: 14px; /* Adjust font size as needed */
+}
+
+.sort-container {
+    display: flex;
+    justify-content: flex-start;
+    margin: 40px 0 10px 80px;
+}
+
+#sortDropdown {
+    background-color: rgb(14, 145, 53);
+    border: none;
+    color: #fff;
+    padding: 5px 10px; /* Adjust padding for a thinner button */
+    font-size: 14px;
+    border-radius: 5%;
+    cursor: pointer;
+    text-align: left; /* Left-align text */
+    width: auto; /* Adjust width based on content */
+    appearance: menulist-button; /* Ensure the arrow is visible */
+}
+
+ul {
+    padding-left: 80px;
+    display: flex;
+    flex-direction: column;
+}
+
+.show {
+    margin-bottom: 30px;
+    list-style-type: none;
+    order: 0; /* Default order value */
+}
+
+.desc-p{
+    font-size: 14px;
+    color: #666;
+    caret-color: auto;
+    background: #0000;
+    border: #0000;
+    width: 80%;
+    outline: none;
+}
+
+.showname{
+    margin-bottom: 10px;
+    color: #000;
+    background: #0000;
+    border: #0000;
+    width: 80%;
+    outline: none;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.showname::placeholder{
+    color: #000;
+}
+
+.showbox {
+    background: #333;
+    padding: 10px 10px 7px 10px;
+    width: 95%;
+    border-radius: 15px;
+}
+
+.img-frame {
+    width: 125px;
+    height: 175px;
+    display: inline-block;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.img-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.show-description {
+    display: inline-block;
+    height: 130px;
+    width: 60%;
+    position: absolute;
+    margin-left: 10px;
+    overflow-y: auto;
+    overflow-wrap: break-word;
+}
+
+.show-description p {
+    margin: 0;
+}
+
+.progbar {
+    display: inline-block;
+    width: 80%;
+}
+
+.progbar p {
+    margin: 0;
+    display: inline-block;
+    width: fit-content;
+    color: #666;
+    margin-left: 5%;
+}
+
+.current-ep {
+    text-align: right;
+    min-width: 52px;
+    width: 5%;
+    margin-left: 2.5%;
+    
+    /* Same as rest in class progbar */
+    margin: 0;
+    display: inline-block;
+    color: #666;
+    caret-color: auto;
+
+    /* Used to match appearance */
+    background-color: #333;
+    font-size: 16px;
+    border: none;
+}
+
+.total-ep {
+    text-align: left;
+    min-width: 52px;
+    width: 5%;
+    margin-left: 2.5%;
+    
+    /* Same as rest in class progbar */
+    margin: 0;
+    display: inline-block;
+    color: #666;
+    caret-color: auto;
+
+    /* Used to match appearance */
+    background-color: #333;
+    font-size: 16px;
+    border: none;
+}
+
+#divider {
+    text-align: center;
+    margin-left: 0%;
+}
+
+#total-ep {
+    text-align: left;
+    margin-left: 0%;
+}
+
+.meter-bg {
+    width: 70%;
+    height: 5px;
+    background-color: #282828;
+    border-radius: 2px;
+    margin: 0 0 1px 30px
+}
+
+.meter {
+    width: 70%;
+    height: 5px;
+    background: linear-gradient(0.25turn, #000, #060, #0f0);
+    display: inline-block;
+    border-radius: 2px;
+    transform: translate(0, -15px);
+    margin: 0 0 1px 30px
+}
+
+.ratings {
+    display: inline-block;
+    width: 125px;
+    height: 35px;
+}
+
+.star-bg {
+    border-radius: 20px;
+    width: 125px;
+    height: 80%;
+    background-color: #282828;
+    margin: 3px auto 0 auto
+}
+
+.number-bg {
+    border-radius: 20px;
+    width: 40px;
+    height: 80%;
+    background-color: #282828;
+    transform: translate(135px, -28px);
+}
+
+.number-bg input {
+    margin: 0;
+    font-weight: bold;
+    transform: translate(5px, 4px);
+    color: #fc0;
+    font-size: 16px;
+    border: none;
+    background: transparent;
+    width: 40px;
+    text-align: center;
+}
+
+.star-darkgray {
+    background-color: #222;
+    width: 102px;
+    margin-left: 12px;
+    height: 18px;
+    transform: translate(0, 4px);
+}
+
+.star-yellow {
+    background-color: #fc0;
+    width: 0;
+    margin-left: 12px;
+    height: 18px;
+    transform: translate(0, -14px);
+}
+
+.star-bg img {
+    position: absolute;
+    width: 103px;
+    height: 18px;
+    transform: translate(11px, -32px);
+}
+
+.add-show-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0; /* Adjust margin as needed */
+}
+
+.add-show {
+    background-color: rgb(14, 145, 53);
+    border: none;
+    color: #fff;
+    text-align: center; 
+    font-size: 14px; /* Adjust font size as needed */
+    padding: 10px; /* Adjust padding as needed */
+    border-radius: 5%;
+    cursor: pointer;
+}
+
+.star-buttons button{
+    background-color: #0000;
+    border: transparent;
+    width: 17.5px;
+    height: 17.5px;
+    transform: translate(10px, -31px);
+    margin-right: 0;
+}
+
+.remove-show-container {
+    float: right;
+    position: relative;
+    width: fit-content;
+}
+
+.remove-show {
+    background-color: rgb(14, 145, 53);
+    border: none;
+    color: #fff;
+    text-align: center; 
+    font-size: 14px; /* Adjust font size as needed */
+    padding: 10px; /* Adjust padding as needed */
+    border-radius: 5%;
+    cursor: pointer;
+}
+
+.center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#sample{
+    display: none;
+}
+
+
+/* Login Page */ 
+
+.signup-container, .login-container{
+    background-color: #666;
+    
+    width: 25%;
+    min-width: fit-content;
+    max-width: 500px;
+    padding: 5px 20px 20px 20px;
+    margin: 2.5%;
+
+    border-radius: 15px;
+
+    font-size: 24px;
+    text-align: center;
+
+    position: relative;
+    float: center;
+
+}
+
+.acc-input {
+    
+    width: 60%;
+    margin: 2.5% 0% 0% 2.5%;
+    height: 36px;
+
+    font-size: 16px;
+
+}
+
+.acc-input-button {
+    background-color: rgb(14, 145, 53);
+    color: #fff;
+    border-color: darkgreen;
+    font-size: 16px;
+    height: 36px;
+    cursor: pointer;
+}
+
+.signup-error, .login-error {
+    border: solid;
+    border-width: 1px;
+    border-color: darkred;
+
+    background: lightcoral;
+
+    width: 60%;
+    max-width: 300px;
+    margin: 0% 0% 2.5% 21.5%;
+
+    color: darkred;
+    font-size: 16px;
+}
+
+#signup-success{
+    border: solid;
+    border-width: 1px;
+    border-color: darkgreen;
+
+    background: lightgreen;
+
+    width: 60%;
+    max-width: 300px;
+    margin: 0% 0% 2.5% 21.5%;
+
+    color: darkgreen;
+    font-size: 16px;
+
+    display: none;
+}
+
+#login-error-msg-holder {
+    
+    display: none;
+    
+    /*
+    display:block; 
+    */
+}
+
+
+#signup-uname-error-msg-holder {
+    
+    display: none;
+    
+    /*
+    display:block; 
+    */
+}
+
+#signup-pass-error-msg-holder {
+    
+    display: none;
+
+    /*
+    display:block; 
+    */
+}
+
+#signup-field-req-msg-holder{
+    display: none;
+}
+
+
+/* Home Page */
+
+.welcome, .HowTo, .Privacy-Policy {
+    margin-bottom: 75px;
+}
+
+.welcome h1, .HowTo h1, .Privacy-Policy h1{
+    padding-left: 1%;
+    padding-right: 1%;
+    background-color: rgb(14, 145, 53);
+    font-size: 32px;
+    width:fit-content;
+}
+
+.HowTo h2, .Privacy-Policy h2{
+    padding-left: 1.5%;
+    font-size: 28px;
+}
+
+.welcome p, .HowTo p, .Privacy-Policy p{
+    padding-left: 2.5%;
+    padding-right: 5%;
+    padding-bottom: 1%;
+    color: #888;
+    font-size: 20px;
+}
+
+#showlistlink{
+    cursor: pointer;
+}

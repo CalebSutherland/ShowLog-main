@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="/static/script.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <nav>
+        <h1>ShowLog</h1>
+        <div class="center">
+            <a id = "showlistlink" class="button-link">Show List</a>
+            <a href="/home/" class="button-link">Home Page</a>
+        </div>
+    </nav>
+    
+    <div class="center">
+        <div class="login-container">
+            <h1>Login</h1>
+
+            <div class="login-error" id="login-error-msg-holder">
+                <p id="login-error-msg">Invalid username or password</p>
+            </div>
+
+            <form id="login-form">
+                <label for="login-uname">Username</label><br>
+                <input  class="acc-input" type="text" name="username" id="login-uname" placeholder="Username"><br><br>
+
+                <label for="login-pass">Password</label><br>
+                <input class="acc-input" type="password" id="login-pass" placeholder="Password"><br><br>
+
+                <button type="submit" class="acc-input-button" id="login-submit">Login</button>
+            </form>
+        </div>
+        
+        <h3>OR</h3>
+        
+        <div class="signup-container">
+            <h1>Create Account</h1>
+
+            <div class="signup-error" id="signup-uname-error-msg-holder">
+                <p id="signup-uname-error-msg">Username already taken or contains non-alphanumeric characters</p>
+            </div>
+
+            <div class="signup-error" id="signup-pass-error-msg-holder">
+                <p id="signup-pass-error-msg">Password verification failed, please ensure passwords are matching and are at least 8 characters long.</p>
+            </div>
+
+            <div class="signup-error" id="signup-field-req-msg-holder">
+                <p id="field-req-msg">All fields are required</p>
+            </div>
+
+            <div id="signup-success">
+                <p>New user created successfully! Use the login box on the left to access your account.</p>
+            </div>
+            
+            <form id="signup-form">
+                <label for="signup-uname">Username</label><br>
+                <input class="acc-input" type="text" id="signup-uname" placeholder="Username"><br><br>
+
+                <label for="signup-pass">Password</label><br>
+                <input class="acc-input" type="password" id="signup-pass" placeholder="Password"><br><br>
+
+                <label for="verify-pass">Verify Password</label><br>
+                <input class="acc-input" type="password" id="verify-pass" placeholder="Verify Password"><br><br>
+
+                <button class="acc-input-button" id="signup-submit">Create Account</button>
+            </form>
+        </div>
+    </div>
+    
+    <script type="text/javascript">
+        var SCRIPT_ROOT = {{ request.script_root|tojson|safe }} ;
+
+        $("#login-submit").on("click", function(e){
+            $("#login-error-msg-holder").css("display", "none");
+            e.preventDefault();
+            var uname = $("#login-uname").val();
+            var pass = $("#login-pass").val();
+            const required_fields = [uname, pass]
+            if(!required_fields.includes("")){
+                var payload = {
+                    username: uname,
+                    password: pass
+                };
+                var posting = $.post(SCRIPT_ROOT + "/auth", payload)
+                
+                posting.fail(function(){
+                    $("#login-error-msg-holder").css("display", "block");
+                });
+
+                posting.done(function(){
+                    window.location.replace(`http://${location.hostname}:5000/shows-${uname}`)
+                })
+            }else{
+                $("#login-error-msg-holder").css("display", "block");
+            }
+        })
+
+        $("#signup-submit").on("click", function(e){
+            //(".signup-error").css("display", "none");
+            $("#signup-uname-error-msg-holder").css("display", "none");
+            $("#signup-pass-error-msg-holder").css("display", "none");
+            $("#signup-field-req-msg-holder").css("display", "none");
+            $("#signup-success").css("display", "none");
+            e.preventDefault();
+            var uname = $("#signup-uname").val();
+            var pass = $("#signup-pass").val();
+            var pass_ver = $("#verify-pass").val();
+            // console.log(pass, $("#verify-pass").val());
+            const required_fields = [uname, pass, pass_ver];
+            if(!required_fields.includes("")){
+                if(pass === pass_ver && pass.length >= 8){
+                    // console.log("GOOD")
+                    var payload = {
+                        username: uname,
+                        password: pass
+                    }
+                    var posting = $.post(SCRIPT_ROOT + "/create_user", payload)
+                    
+                    posting.fail(function(){
+                        $("#signup-uname-error-msg-holder").css("display", "block");
+                    });
+
+                    posting.done(function(){
+                        $("#signup-success").css("display", "block");
+                    });
+                }else{
+                    // console.log("BAD")
+                    $("#signup-pass-error-msg-holder").css("display", "block");
+                }
+            }else{
+                $("#signup-field-req-msg-holder").css("display", "block");
+            }
+            $("#signup-uname").val('');
+            $("#signup-pass").val('');
+            $("#verify-pass").val('');
+        })
+        $("#showlistlink").on("click", function(){
+            $.get(SCRIPT_ROOT + "/anonymous").done(function(response){
+                window.location.replace(`http://${location.hostname}:5000/shows-${response}`)
+            })
+        })
+    </script>
+
+</body>
+
+</html>
