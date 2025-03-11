@@ -14,7 +14,7 @@ A web application to track your favorite TV shows, episodes, and seasons.
 1. Clone the repository:
    ```bash
    git clone https://github.com/CalebSutherland/ShowLog-main.git
-   cd showtracker
+   cd ShowLog-main
    ```
 2. Build and start the containers using Docker Compose:
    ```bash
