@@ -26,3 +26,5 @@ A web application to track your favorite TV shows, episodes, and seasons.
    ```bash
    docker-compose down
    ```
+
+   Original Repo: https://github.com/ethomas1541/Asparagus
